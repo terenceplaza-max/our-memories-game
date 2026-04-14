@@ -218,7 +218,10 @@
 
         <!-- Audio Elements -->
         <audio id="bgMusic" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+            <source src="https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="endingMusic" loop>
+            <source src="https://assets.mixkit.co/music/preview/mixkit-love-and-kindness-106.mp3" type="audio/mpeg">
         </audio>
         <audio id="victorySound">
             <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3" type="audio/mpeg">
@@ -281,14 +284,19 @@
                 title: "Memory 2: Our First Adventure",
                 story: "Every adventure with you felt like magic. We explored new places, tried new things, and created memories that would last forever.",
                 platforms: [
-                    {x: 0, y: 550, width: 150, height: 50},
-                    {x: 200, y: 500, width: 120, height: 40},
-                    {x: 350, y: 450, width: 100, height: 40},
-                    {x: 500, y: 400, width: 150, height: 40},
-                    {x: 680, y: 350, width: 120, height: 40},
-                    {x: 600, y: 250, width: 180, height: 40},
-                    {x: 400, y: 180, width: 140, height: 40},
-                    {x: 180, y: 120, width: 160, height: 40}
+                    {x: 0, y: 550, width: 120, height: 50},
+                    {x: 180, y: 480, width: 100, height: 40},
+                    {x: 350, y: 420, width: 100, height: 40},
+                    {x: 550, y: 420, width: 100, height: 40},
+                    {x: 700, y: 350, width: 100, height: 40},
+                    {x: 500, y: 280, width: 120, height: 40},
+                    {x: 300, y: 200, width: 120, height: 40},
+                    {x: 100, y: 150, width: 120, height: 40}
+                ],
+                obstacles: [
+                    {x: 180, y: 480, width: 100}, // Spikes on platform 2
+                    {x: 550, y: 420, width: 100}, // Spikes on platform 4
+                    {x: 300, y: 200, width: 120}  // Spikes on platform 7
                 ],
                 hearts: [
                     {x: 240, y: 460},
@@ -400,6 +408,7 @@
         // Current level data
         let platforms = [];
         let hearts = [];
+        let obstacles = [];
         let goal = {};
         let heartsCollected = 0;
 
@@ -407,6 +416,7 @@
             const level = levels[levelIndex];
             platforms = [...level.platforms];
             hearts = level.hearts.map(h => ({...h, collected: false}));
+            obstacles = level.obstacles ? [...level.obstacles] : [];
             goal = {...level.goal};
             heartsCollected = 0;
             
@@ -429,7 +439,12 @@
             
             // Start background music
             const music = document.getElementById('bgMusic');
+            const ending = document.getElementById('endingMusic');
+            ending.pause();
+            ending.currentTime = 0;
+            
             music.volume = 0.3; // Soft volume
+            music.currentTime = 0;
             music.play().catch(e => console.log("Audio play blocked until interaction"));
             
             gameLoop();
@@ -453,13 +468,20 @@
             
             document.getElementById('finalMessage').textContent = finalText;
             showOverlay('gameCompleteScreen');
+
+            // Switch to ending lovely music
+            const music = document.getElementById('bgMusic');
+            const ending = document.getElementById('endingMusic');
+            music.pause();
+            ending.volume = 0.4;
+            ending.play();
         }
 
         function restartGame() {
             hideOverlay('gameCompleteScreen');
-            currentLevel = 0;
-            totalHeartsCollected = 0;
-            loadLevel(currentLevel);
+            const ending = document.getElementById('endingMusic');
+            ending.pause();
+            startGame();
         }
 
         function showOverlay(id) {
@@ -522,6 +544,16 @@
                 }
             }
 
+            // Obstacle collision (Spikes)
+            for (let obs of obstacles) {
+                if (player.x + player.width > obs.x + 5 &&
+                    player.x < obs.x + obs.width - 5 &&
+                    player.y + player.height > obs.y - 10 &&
+                    player.y < obs.y + 10) {
+                    gameOver();
+                }
+            }
+
             // Boundary collision
             if (player.x < 0) player.x = 0;
             if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
@@ -579,6 +611,20 @@
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
                 ctx.lineWidth = 2;
                 ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+            }
+
+            // Draw obstacles (Spikes)
+            ctx.fillStyle = '#ff4d4d';
+            for (let obs of obstacles) {
+                const spikeWidth = 20;
+                const numSpikes = obs.width / spikeWidth;
+                for (let i = 0; i < numSpikes; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(obs.x + i * spikeWidth, obs.y);
+                    ctx.lineTo(obs.x + i * spikeWidth + spikeWidth/2, obs.y - 15);
+                    ctx.lineTo(obs.x + (i + 1) * spikeWidth, obs.y);
+                    ctx.fill();
+                }
             }
 
             // Draw hearts
