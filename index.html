@@ -452,11 +452,11 @@
         }
 
         // Audio Handling with YouTube
-        let player;
+        let ytPlayer;
         let isMuted = false;
 
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('youtubePlayer', {
+            ytPlayer = new YT.Player('youtubePlayer', {
                 height: '0',
                 width: '0',
                 videoId: 'ua21q51aMJs',
@@ -483,9 +483,9 @@
             loadLevel(currentLevel);
             
             // Start YouTube music
-            if (player && player.playVideo) {
-                player.setVolume(50);
-                player.playVideo();
+            if (ytPlayer && ytPlayer.playVideo) {
+                ytPlayer.setVolume(50);
+                ytPlayer.playVideo();
             }
             
             updateMusicIcon();
@@ -494,9 +494,9 @@
 
         function toggleMusic() {
             isMuted = !isMuted;
-            if (player) {
-                if (isMuted) player.pauseVideo();
-                else player.playVideo();
+            if (ytPlayer) {
+                if (isMuted) ytPlayer.pauseVideo();
+                else ytPlayer.playVideo();
             }
             updateMusicIcon();
         }
