@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Memories - A Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating particles background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        #gameContainer {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            z-index: 1;
+        }
+
+        #gameCanvas {
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to bottom, #ffecd2 0%, #fcb69f 100%);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .ui-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .message-box {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 50px;
+            border-radius: 20px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .message-box h1 {
+            font-family: 'Philosopher', sans-serif;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #764ba2;
+            font-weight: 700;
+        }
+
+        .message-box p {
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .message-box button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-family: 'Philosopher', sans-serif;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+        }
+
+        .message-box button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(118, 75, 162, 0.4);
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        #levelInfo {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.4em;
+            font-family: 'Philosopher', sans-serif;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        #stats {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.2em;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
+
+    <div id="gameContainer">
+        <div id="levelInfo">Memory 1: The First Day</div>
+        <div id="stats">Hearts Collected: <span id="heartCount">0</span>/5</div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="controls">Arrow Keys / WASD to move • SPACE to jump</div>
+
+        <!-- UI Overlays -->
+        <div class="ui-overlay active" id="startScreen">
+            <div class="message-box">
+                <h1>Our Memories</h1>
+                <p>A journey through the moments we shared together.<br>
+                Collect the hearts that represent our beautiful memories.<br><br>
+                This is for you, with all my love.</p>
+                <button onclick="startGame()">Begin the Journey</button>
+            </div>
+        </div>
+
+        <div class="ui-overlay" id="levelCompleteScreen">
+            <div class="message-box">
+                <h1 id="levelCompleteTitle">Memory Collected!</h1>
+                <p id="levelCompleteText"></p>
+                <button onclick="nextLevel()">Continue</button>
+            </div>
+        </div>
+
+        <div class="ui-overlay" id="gameCompleteScreen">
+            <div class="message-box">
+                <h1>All Our Memories</h1>
+                <p id="finalMessage"></p>
+                <button onclick="restartGame()">Relive the Memories</button>
+            </div>
+        </div>
+
+        <!-- Audio Elements -->
+        <audio id="bgMusic" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="victorySound">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3" type="audio/mpeg">
+        </audio>
+        <audio id="dieSound">
+            <source src="https://assets.mixkit.co/sfx/preview/mixkit-falling-into-a-void-2144.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 10 + 5;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Game variables
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameStarted = false;
+        let currentLevel = 0;
+        let totalHeartsCollected = 0;
+
+        // Level data
+        const levels = [
+            {
+                title: "Memory 1: The First Day",
+                story: "I remember the first time we met. Your smile lit up the entire room, and I knew something special was beginning.",
+                platforms: [
+                    {x: 0, y: 550, width: 200, height: 50},
+                    {x: 250, y: 480, width: 150, height: 40},
+                    {x: 450, y: 400, width: 150, height: 40},
+                    {x: 650, y: 350, width: 150, height: 40},
+                    {x: 500, y: 250, width: 200, height: 40},
+                    {x: 250, y: 180, width: 150, height: 40},
+                    {x: 50, y: 120, width: 150, height: 40}
+                ],
+                hearts: [
+                    {x: 300, y: 440},
+                    {x: 500, y: 360},
+                    {x: 700, y: 310},
+                    {x: 580, y: 210},
+                    {x: 110, y: 80}
+                ],
+                goal: {x: 100, y: 50}
+            },
+            {
+                title: "Memory 2: Our First Adventure",
+                story: "Every adventure with you felt like magic. We explored new places, tried new things, and created memories that would last forever.",
+                platforms: [
+                    {x: 0, y: 550, width: 150, height: 50},
+                    {x: 200, y: 500, width: 120, height: 40},
+                    {x: 350, y: 450, width: 100, height: 40},
+                    {x: 500, y: 400, width: 150, height: 40},
+                    {x: 680, y: 350, width: 120, height: 40},
+                    {x: 600, y: 250, width: 180, height: 40},
+                    {x: 400, y: 180, width: 140, height: 40},
+                    {x: 180, y: 120, width: 160, height: 40}
+                ],
+                hearts: [
+                    {x: 240, y: 460},
+                    {x: 380, y: 410},
+                    {x: 720, y: 310},
+                    {x: 660, y: 210},
+                    {x: 240, y: 80}
+                ],
+                goal: {x: 220, y: 50}
+            },
+            {
+                title: "Memory 3: The Little Things",
+                story: "It wasn't just the big moments. It was the quiet mornings, the silly jokes, the way you laughed at my terrible puns. Those small moments meant everything.",
+                platforms: [
+                    {x: 0, y: 550, width: 180, height: 50},
+                    {x: 220, y: 480, width: 140, height: 40},
+                    {x: 400, y: 420, width: 160, height: 40},
+                    {x: 600, y: 360, width: 150, height: 40},
+                    {x: 450, y: 280, width: 140, height: 40},
+                    {x: 250, y: 220, width: 150, height: 40},
+                    {x: 480, y: 140, width: 180, height: 40},
+                    {x: 100, y: 80, width: 140, height: 40}
+                ],
+                hearts: [
+                    {x: 270, y: 440},
+                    {x: 450, y: 380},
+                    {x: 650, y: 320},
+                    {x: 300, y: 180},
+                    {x: 550, y: 100}
+                ],
+                goal: {x: 140, y: 20}
+            },
+            {
+                title: "Memory 4: Growing Together",
+                story: "We grew together, supported each other through challenges, celebrated victories. You made me a better person just by being you.",
+                platforms: [
+                    {x: 0, y: 550, width: 160, height: 50},
+                    {x: 180, y: 490, width: 130, height: 40},
+                    {x: 340, y: 430, width: 140, height: 40},
+                    {x: 510, y: 370, width: 150, height: 40},
+                    {x: 680, y: 310, width: 120, height: 40},
+                    {x: 540, y: 240, width: 160, height: 40},
+                    {x: 320, y: 170, width: 180, height: 40},
+                    {x: 520, y: 100, width: 150, height: 40},
+                    {x: 150, y: 60, width: 140, height: 40}
+                ],
+                hearts: [
+                    {x: 220, y: 450},
+                    {x: 380, y: 390},
+                    {x: 560, y: 330},
+                    {x: 400, y: 130},
+                    {x: 190, y: 20}
+                ],
+                goal: {x: 200, y: -10}
+            },
+            {
+                title: "Memory 5: Hope for Tomorrow",
+                story: "Even though we're apart right now, these memories remain. They're real, they're beautiful, and they're ours. I hope one day we can create new ones together again.",
+                platforms: [
+                    {x: 0, y: 550, width: 150, height: 50},
+                    {x: 170, y: 490, width: 140, height: 40},
+                    {x: 330, y: 430, width: 150, height: 40},
+                    {x: 500, y: 370, width: 140, height: 40},
+                    {x: 660, y: 310, width: 140, height: 40},
+                    {x: 500, y: 250, width: 180, height: 40},
+                    {x: 300, y: 190, width: 160, height: 40},
+                    {x: 480, y: 130, width: 170, height: 40},
+                    {x: 250, y: 70, width: 180, height: 40},
+                    {x: 450, y: 10, width: 200, height: 40}
+                ],
+                hearts: [
+                    {x: 210, y: 450},
+                    {x: 380, y: 390},
+                    {x: 550, y: 330},
+                    {x: 380, y: 150},
+                    {x: 540, y: -30}
+                ],
+                goal: {x: 530, y: -50}
+            }
+        ];
+
+        // Player object
+        const player = {
+            x: 50,
+            y: 500,
+            width: 30,
+            height: 30,
+            velocityX: 0,
+            velocityY: 0,
+            speed: 5,
+            jumpPower: 12,
+            isJumping: false,
+            color: '#ff6b9d',
+            facingLeft: false
+        };
+
+        // Input handling
+        const keys = {};
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key === ' ' || e.key.toLowerCase() === 'w' || e.key === 'ArrowUp') {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        // Current level data
+        let platforms = [];
+        let hearts = [];
+        let goal = {};
+        let heartsCollected = 0;
+
+        function loadLevel(levelIndex) {
+            const level = levels[levelIndex];
+            platforms = [...level.platforms];
+            hearts = level.hearts.map(h => ({...h, collected: false}));
+            goal = {...level.goal};
+            heartsCollected = 0;
+            
+            player.x = 50;
+            player.y = 500;
+            player.velocityX = 0;
+            player.velocityY = 0;
+            player.isJumping = false;
+
+            document.getElementById('levelInfo').textContent = level.title;
+            document.getElementById('heartCount').textContent = '0';
+        }
+
+        function startGame() {
+            hideOverlay('startScreen');
+            gameStarted = true;
+            currentLevel = 0;
+            totalHeartsCollected = 0;
+            loadLevel(currentLevel);
+            
+            // Start background music
+            const music = document.getElementById('bgMusic');
+            music.volume = 0.3; // Soft volume
+            music.play().catch(e => console.log("Audio play blocked until interaction"));
+            
+            gameLoop();
+        }
+
+        function nextLevel() {
+            hideOverlay('levelCompleteScreen');
+            currentLevel++;
+            if (currentLevel < levels.length) {
+                loadLevel(currentLevel);
+            } else {
+                showGameComplete();
+            }
+        }
+
+        function showGameComplete() {
+            const finalText = `You collected all ${totalHeartsCollected} hearts across our journey together.\n\n` +
+                             `These memories are precious to me. Every moment we shared, every laugh, every adventure - they all matter.\n\n` +
+                             `I believe in us. I believe in the love we built. And I hope with all my heart that this isn't the end of our story.\n\n` +
+                             `With all my love, always.`;
+            
+            document.getElementById('finalMessage').textContent = finalText;
+            showOverlay('gameCompleteScreen');
+        }
+
+        function restartGame() {
+            hideOverlay('gameCompleteScreen');
+            currentLevel = 0;
+            totalHeartsCollected = 0;
+            loadLevel(currentLevel);
+        }
+
+        function showOverlay(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function hideOverlay(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function showLevelComplete() {
+            const level = levels[currentLevel];
+            document.getElementById('levelCompleteTitle').textContent = 'Memory Complete!';
+            document.getElementById('levelCompleteText').textContent = level.story;
+            showOverlay('levelCompleteScreen');
+            
+            // Play victory sound
+            const victory = document.getElementById('victorySound');
+            victory.volume = 0.5;
+            victory.play();
+        }
+
+        // Game physics and update
+        function update() {
+            // Horizontal movement
+            if (keys['a'] || keys['arrowleft']) {
+                player.velocityX = -player.speed;
+                player.facingLeft = true;
+            } else if (keys['d'] || keys['arrowright']) {
+                player.velocityX = player.speed;
+                player.facingLeft = false;
+            } else {
+                player.velocityX = 0;
+            }
+
+            // Jumping
+            if ((keys[' '] || keys['w'] || keys['arrowup']) && !player.isJumping) {
+                player.velocityY = -player.jumpPower;
+                player.isJumping = true;
+            }
+
+            // Apply gravity
+            player.velocityY += 0.5;
+
+            // Update position
+            player.x += player.velocityX;
+            player.y += player.velocityY;
+
+            // Platform collision
+            player.isJumping = true;
+            for (let platform of platforms) {
+                if (player.x + player.width > platform.x &&
+                    player.x < platform.x + platform.width &&
+                    player.y + player.height > platform.y &&
+                    player.y + player.height < platform.y + platform.height + 20 &&
+                    player.velocityY >= 0) {
+                    player.y = platform.y - player.height;
+                    player.velocityY = 0;
+                    player.isJumping = false;
+                }
+            }
+
+            // Boundary collision
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+            if (player.y > canvas.height) {
+                // If you die you go back from the start
+                gameOver();
+            }
+
+            // Heart collection
+            for (let heart of hearts) {
+                if (!heart.collected) {
+                    const dist = Math.sqrt(Math.pow(player.x + player.width/2 - heart.x, 2) + 
+                                         Math.pow(player.y + player.height/2 - heart.y, 2));
+                    if (dist < 30) {
+                        heart.collected = true;
+                        heartsCollected++;
+                        totalHeartsCollected++;
+                        document.getElementById('heartCount').textContent = heartsCollected;
+                    }
+                }
+            }
+
+            // Goal check
+            if (heartsCollected === hearts.length) {
+                const distToGoal = Math.sqrt(Math.pow(player.x + player.width/2 - goal.x, 2) + 
+                                            Math.pow(player.y + player.height/2 - goal.y, 2));
+                if (distToGoal < 40) {
+                    showLevelComplete();
+                }
+            }
+        }
+
+        // Rendering
+        function draw() {
+            // Clear canvas with gradient
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#ffecd2');
+            gradient.addColorStop(1, '#fcb69f');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw platforms with soft shadows
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            for (let platform of platforms) {
+                // Platform gradient
+                const platGradient = ctx.createLinearGradient(platform.x, platform.y, 
+                                                             platform.x, platform.y + platform.height);
+                platGradient.addColorStop(0, '#a8edea');
+                platGradient.addColorStop(1, '#fed6e3');
+                ctx.fillStyle = platGradient;
+                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                
+                // Platform outline
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
+            }
+
+            // Draw hearts
+            ctx.shadowBlur = 20;
+            for (let heart of hearts) {
+                if (!heart.collected) {
+                    ctx.shadowColor = '#ff6b9d';
+                    drawHeart(heart.x, heart.y, 15);
+                }
+            }
+
+            // Draw goal (when all hearts collected)
+            if (heartsCollected === hearts.length) {
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = '#ffd700';
+                const pulse = Math.sin(Date.now() / 200) * 5;
+                drawStar(goal.x, goal.y, 20 + pulse);
+            }
+
+            // Draw player
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(0,0,0,0.2)';
+            drawGirl(player.x + player.width/2, player.y + player.height/2, player.width, player.facingLeft);
+
+            // Reset shadow
+            ctx.shadowBlur = 0;
+        }
+
+        function drawHeart(x, y, size) {
+            ctx.fillStyle = '#ff6b9d';
+            ctx.beginPath();
+            ctx.moveTo(x, y + size / 4);
+            ctx.bezierCurveTo(x, y, x - size / 2, y - size / 2, x - size / 2, y + size / 4);
+            ctx.bezierCurveTo(x - size / 2, y + size / 2, x, y + size, x, y + size + size / 4);
+            ctx.bezierCurveTo(x, y + size, x + size / 2, y + size / 2, x + size / 2, y + size / 4);
+            ctx.bezierCurveTo(x + size / 2, y - size / 2, x, y, x, y + size / 4);
+            ctx.fill();
+        }
+
+        function drawGirl(x, y, size, facingLeft) {
+            const scale = size / 30;
+            ctx.save();
+            ctx.translate(x, y);
+            if (facingLeft) ctx.scale(-1, 1);
+
+            // Body (Dress)
+            ctx.fillStyle = '#ff85a1';
+            ctx.beginPath();
+            ctx.moveTo(-10 * scale, 15 * scale);
+            ctx.lineTo(10 * scale, 15 * scale);
+            ctx.lineTo(12 * scale, 0);
+            ctx.lineTo(-12 * scale, 0);
+            ctx.closePath();
+            ctx.fill();
+
+            // Head
+            ctx.fillStyle = '#ffe0bd';
+            ctx.beginPath();
+            ctx.arc(0, -10 * scale, 10 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair (Short)
+            ctx.fillStyle = '#4b2e2a';
+            ctx.beginPath();
+            ctx.arc(0, -11 * scale, 11 * scale, Math.PI, 0); // Top hair
+            ctx.fill();
+            // Hair bangs/side
+            ctx.fillRect(-11 * scale, -11 * scale, 5 * scale, 10 * scale);
+            ctx.fillRect(6 * scale, -11 * scale, 5 * scale, 10 * scale);
+
+            // Glasses
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 1 * scale;
+            // Left lens
+            ctx.strokeRect(-6 * scale, -11 * scale, 4 * scale, 3 * scale);
+            // Right lens
+            ctx.strokeRect(1 * scale, -11 * scale, 4 * scale, 3 * scale);
+            // Bridge
+            ctx.beginPath();
+            ctx.moveTo(-2 * scale, -9.5 * scale);
+            ctx.lineTo(1 * scale, -9.5 * scale);
+            ctx.stroke();
+
+            // Eyes (behind glasses)
+            ctx.fillStyle = '#333';
+            ctx.beginPath();
+            ctx.arc(-4 * scale, -9.5 * scale, 1 * scale, 0, Math.PI * 2);
+            ctx.arc(3 * scale, -9.5 * scale, 1 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile
+            ctx.beginPath();
+            ctx.arc(0, -7 * scale, 3 * scale, 0, Math.PI);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawStar(x, y, size) {
+            ctx.fillStyle = '#ffd700';
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i * 4 * Math.PI) / 5 - Math.PI / 2;
+                const px = x + Math.cos(angle) * size;
+                const py = y + Math.sin(angle) * size;
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function gameOver() {
+            gameStarted = false;
+            
+            // Play death sound
+            const dieSound = document.getElementById('dieSound');
+            dieSound.play();
+            
+            // Update start screen text for "death"
+            const startTitle = document.querySelector('#startScreen h1');
+            const startText = document.querySelector('#startScreen p');
+            const startButton = document.querySelector('#startScreen button');
+            
+            startTitle.textContent = "The Journey Stumbled";
+            startText.innerHTML = "I fell, but my love for you never wavers.<br>Let's start our journey through our memories again.";
+            startButton.textContent = "Restart the Journey";
+            
+            showOverlay('startScreen');
+            
+            // Stop music 
+            const music = document.getElementById('bgMusic');
+            music.pause();
+            music.currentTime = 0;
+        }
+
+        function gameLoop() {
+            if (!gameStarted) return;
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
+</body>
+</html>
