@@ -201,6 +201,10 @@
             background: rgba(255, 255, 255, 0.2);
             transform: scale(1.1);
         }
+
+        #youtubePlayer {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -248,7 +252,12 @@
         <audio id="dieSound">
             <source src="https://assets.mixkit.co/sfx/preview/mixkit-falling-into-a-void-2144.mp3" type="audio/mpeg">
         </audio>
+        <!-- YouTube Player Container -->
+        <div id="youtubePlayer"></div>
     </div>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 
     <script>
         // Create floating particles
@@ -442,89 +451,53 @@
             document.getElementById('heartCount').textContent = '0';
         }
 
-        // Lovely Music Synth
-        let audioCtx;
-        let mainLoop;
-        let isEnding = false;
+        // Audio Handling with YouTube
+        let player;
+        let isMuted = false;
 
-        function initAudio() {
-            if (audioCtx) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            startSynth();
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtubePlayer', {
+                height: '0',
+                width: '0',
+                videoId: 'ua21q51aMJs',
+                playerVars: {
+                    'autoplay': 0,
+                    'loop': 1,
+                    'playlist': 'ua21q51aMJs'
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
         }
 
-        function startSynth() {
-            if (mainLoop) clearInterval(mainLoop);
-            
-            const playPianoNote = (freq, time, volume = 0.1) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                // Triangle wave for a softer, piano-like tone
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, time);
-                
-                gain.gain.setValueAtTime(0, time);
-                gain.gain.linearRampToValueAtTime(volume, time + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, time + 1.5);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start(time);
-                osc.stop(time + 1.5);
-                
-                // Add a subtle harmonic for "richness"
-                const osc2 = audioCtx.createOscillator();
-                const gain2 = audioCtx.createGain();
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(freq * 2, time);
-                gain2.gain.setValueAtTime(0, time);
-                gain2.gain.linearRampToValueAtTime(volume * 0.3, time + 0.1);
-                gain2.gain.exponentialRampToValueAtTime(0.001, time + 1);
-                osc2.connect(gain2);
-                gain2.connect(audioCtx.destination);
-                osc2.start(time);
-                osc2.stop(time + 1);
-            };
-
-            const melody = isEnding ? [261.63, 329.63, 392.00, 523.25] : [329.63, 392.00, 440.00, 349.23];
-            let i = 0;
-            
-            const interval = 800;
-            mainLoop = setInterval(() => {
-                if (isMuted) return;
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                
-                const now = audioCtx.currentTime;
-                playPianoNote(melody[i % melody.length], now);
-                if (i % 4 === 0) playPianoNote(melody[0] / 2, now, 0.05); // Bass note
-                i++;
-            }, interval);
+        function onPlayerReady(event) {
+            // Player is ready
         }
-
-        document.addEventListener('click', () => {
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        });
 
         function startGame() {
-            initAudio();
             hideOverlay('startScreen');
             gameStarted = true;
             currentLevel = 0;
             totalHeartsCollected = 0;
             loadLevel(currentLevel);
-            isEnding = false;
-            startSynth();
             
+            // Start YouTube music
+            if (player && player.playVideo) {
+                player.setVolume(50);
+                player.playVideo();
+            }
+            
+            updateMusicIcon();
             gameLoop();
         }
 
-        let isMuted = false;
         function toggleMusic() {
             isMuted = !isMuted;
+            if (player) {
+                if (isMuted) player.pauseVideo();
+                else player.playVideo();
+            }
             updateMusicIcon();
         }
 
@@ -550,14 +523,10 @@
             
             document.getElementById('finalMessage').textContent = finalText;
             showOverlay('gameCompleteScreen');
-
-            isEnding = true;
-            startSynth();
         }
 
         function restartGame() {
             hideOverlay('gameCompleteScreen');
-            isEnding = false;
             startGame();
         }
 
