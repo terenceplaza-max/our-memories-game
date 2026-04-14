@@ -221,7 +221,8 @@
                 <p>A journey through the moments we shared together.<br>
                 Collect the hearts that represent our beautiful memories.<br><br>
                 This is for you, with all my love.</p>
-                <button onclick="startGame()">Begin the Journey</button>
+                <div id="audioStatus" style="font-size: 0.9em; color: #764ba2; margin-bottom: 15px;">Loading Music...</div>
+                <button id="startBtn" onclick="startGame()" disabled>Please Wait...</button>
             </div>
         </div>
 
@@ -242,11 +243,13 @@
         </div>
 
         <!-- Audio Elements -->
-        <audio id="bgMusic" loop>
+        <audio id="bgMusic" loop preload="auto">
             <source src="https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-493.mp3" type="audio/mpeg">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
         </audio>
-        <audio id="endingMusic" loop>
+        <audio id="endingMusic" loop preload="auto">
             <source src="https://assets.mixkit.co/music/preview/mixkit-love-and-kindness-106.mp3" type="audio/mpeg">
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
         </audio>
         <audio id="victorySound">
             <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3" type="audio/mpeg">
@@ -450,6 +453,26 @@
             document.getElementById('heartCount').textContent = '0';
         }
 
+        // Audio loading check
+        const bgMusic = document.getElementById('bgMusic');
+        const startBtn = document.getElementById('startBtn');
+        const audioStatus = document.getElementById('audioStatus');
+
+        bgMusic.oncanplaythrough = () => {
+            startBtn.disabled = false;
+            startBtn.textContent = 'Begin the Journey';
+            audioStatus.textContent = 'Lovely Music Ready ✨';
+        };
+
+        // Fallback for Safari/Mobile or slow connections
+        setTimeout(() => {
+            if (startBtn.disabled) {
+                startBtn.disabled = false;
+                startBtn.textContent = 'Begin the Journey';
+                audioStatus.textContent = 'Starting with fallback music...';
+            }
+        }, 5000);
+
         function startGame() {
             hideOverlay('startScreen');
             gameStarted = true;
@@ -463,11 +486,20 @@
             ending.pause();
             ending.currentTime = 0;
             
-            music.volume = 0.4;
+            music.volume = 0.5;
             music.currentTime = 0;
-            music.play().catch(e => console.log("Audio play blocked until interaction"));
-            updateMusicIcon();
+            const playPromise = music.play();
             
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Playback prevented. Click anywhere to start music.");
+                    document.addEventListener('click', () => {
+                        music.play();
+                    }, { once: true });
+                });
+            }
+            
+            updateMusicIcon();
             gameLoop();
         }
 
