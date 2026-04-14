@@ -624,13 +624,19 @@
             ctx.translate(x, y);
             if (facingLeft) ctx.scale(-1, 1);
 
+            // Subtle jump animation (stretch/squash)
+            let bounce = 0;
+            if (player.isJumping) {
+                bounce = Math.sin(Date.now() / 100) * 2;
+            }
+
             // Body (Dress)
             ctx.fillStyle = '#ff85a1';
             ctx.beginPath();
-            ctx.moveTo(-10 * scale, 15 * scale);
-            ctx.lineTo(10 * scale, 15 * scale);
-            ctx.lineTo(12 * scale, 0);
-            ctx.lineTo(-12 * scale, 0);
+            ctx.moveTo(-10 * scale, (15 + bounce) * scale);
+            ctx.lineTo(10 * scale, (15 + bounce) * scale);
+            ctx.lineTo(13 * scale, 0);
+            ctx.lineTo(-13 * scale, 0);
             ctx.closePath();
             ctx.fill();
 
@@ -640,38 +646,50 @@
             ctx.arc(0, -10 * scale, 10 * scale, 0, Math.PI * 2);
             ctx.fill();
 
-            // Hair (Short)
+            // Blush
+            ctx.fillStyle = 'rgba(255, 182, 193, 0.6)';
+            ctx.beginPath();
+            ctx.arc(-6 * scale, -7 * scale, 2 * scale, 0, Math.PI * 2);
+            ctx.arc(6 * scale, -7 * scale, 2 * scale, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair (Short & Rounded)
             ctx.fillStyle = '#4b2e2a';
             ctx.beginPath();
-            ctx.arc(0, -11 * scale, 11 * scale, Math.PI, 0); // Top hair
+            ctx.arc(0, -11 * scale, 11 * scale, Math.PI, 0); // Top
             ctx.fill();
-            // Hair bangs/side
-            ctx.fillRect(-11 * scale, -11 * scale, 5 * scale, 10 * scale);
-            ctx.fillRect(6 * scale, -11 * scale, 5 * scale, 10 * scale);
+            
+            // Rounded Hair Sides
+            ctx.beginPath();
+            ctx.roundRect(-11 * scale, -11 * scale, 5 * scale, 12 * scale, 5 * scale);
+            ctx.roundRect(6 * scale, -11 * scale, 5 * scale, 12 * scale, 5 * scale);
+            ctx.fill();
 
             // Glasses
             ctx.strokeStyle = '#333';
-            ctx.lineWidth = 1 * scale;
+            ctx.lineWidth = 1.5 * scale;
             // Left lens
-            ctx.strokeRect(-6 * scale, -11 * scale, 4 * scale, 3 * scale);
+            ctx.strokeRect(-6 * scale, -11 * scale, 4 * scale, 4 * scale);
             // Right lens
-            ctx.strokeRect(1 * scale, -11 * scale, 4 * scale, 3 * scale);
+            ctx.strokeRect(2 * scale, -11 * scale, 4 * scale, 4 * scale);
             // Bridge
             ctx.beginPath();
-            ctx.moveTo(-2 * scale, -9.5 * scale);
-            ctx.lineTo(1 * scale, -9.5 * scale);
+            ctx.moveTo(-2 * scale, -9 * scale);
+            ctx.lineTo(2 * scale, -9 * scale);
             ctx.stroke();
 
             // Eyes (behind glasses)
             ctx.fillStyle = '#333';
             ctx.beginPath();
-            ctx.arc(-4 * scale, -9.5 * scale, 1 * scale, 0, Math.PI * 2);
-            ctx.arc(3 * scale, -9.5 * scale, 1 * scale, 0, Math.PI * 2);
+            ctx.arc(-4 * scale, -9 * scale, 1.2 * scale, 0, Math.PI * 2);
+            ctx.arc(4 * scale, -9 * scale, 1.2 * scale, 0, Math.PI * 2);
             ctx.fill();
 
             // Smile
             ctx.beginPath();
-            ctx.arc(0, -7 * scale, 3 * scale, 0, Math.PI);
+            ctx.strokeStyle = '#4b2e2a';
+            ctx.lineWidth = 1;
+            ctx.arc(0, -6 * scale, 3 * scale, 0.2 * Math.PI, 0.8 * Math.PI);
             ctx.stroke();
 
             ctx.restore();
