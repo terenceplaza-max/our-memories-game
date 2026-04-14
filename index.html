@@ -357,7 +357,7 @@
                     {x: 0, y: 550, width: 160, height: 50},
                     {x: 180, y: 490, width: 130, height: 40},
                     {x: 340, y: 430, width: 140, height: 40},
-                    {x: 510, y: 370, width: 150, height: 40},
+                    {x: 510, y: 370, width: 150, height: 40, moving: true, range: 100, speed: 2, dir: 1, startX: 510},
                     {x: 680, y: 310, width: 120, height: 40},
                     {x: 540, y: 240, width: 160, height: 40},
                     {x: 320, y: 170, width: 180, height: 40},
@@ -571,6 +571,16 @@
 
         // Game physics and update
         function update() {
+            // Update moving platforms
+            for (let platform of platforms) {
+                if (platform.moving) {
+                    platform.x += platform.speed * platform.dir;
+                    if (platform.x > platform.startX + platform.range || platform.x < platform.startX - platform.range) {
+                        platform.dir *= -1;
+                    }
+                }
+            }
+
             // Horizontal movement
             if (keys['a'] || keys['arrowleft']) {
                 player.velocityX = -player.speed;
