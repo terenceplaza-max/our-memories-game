@@ -353,46 +353,39 @@
                 title: "Memory 4: Growing Together",
                 story: "We grew together, supported each other through challenges, celebrated victories. You made me a better person just by being you.",
                 platforms: [
-                    {x: 0, y: 550, width: 160, height: 50},
-                    {x: 180, y: 500, width: 130, height: 40},
-                    {x: 340, y: 450, width: 140, height: 40},
-                    {x: 510, y: 400, width: 150, height: 40, moving: true, range: 60, speed: 1.5, dir: 1, startX: 510},
-                    {x: 680, y: 350, width: 120, height: 40},
-                    {x: 540, y: 300, width: 160, height: 40},
-                    {x: 320, y: 250, width: 180, height: 40},
-                    {x: 520, y: 200, width: 150, height: 40},
-                    {x: 150, y: 150, width: 140, height: 40}
+                    {x: 50, y: 550, width: 200, height: 40},
+                    {x: 300, y: 450, width: 200, height: 40},
+                    {x: 550, y: 350, width: 200, height: 40},
+                    {x: 300, y: 250, width: 200, height: 40},
+                    {x: 50, y: 150, width: 200, height: 40}
                 ],
                 hearts: [
-                    {x: 220, y: 450},
-                    {x: 380, y: 390},
-                    {x: 560, y: 330},
-                    {x: 400, y: 130},
-                    {x: 190, y: 20}
+                    {x: 100, y: 510},
+                    {x: 350, y: 410},
+                    {x: 600, y: 310},
+                    {x: 350, y: 210},
+                    {x: 100, y: 110}
                 ],
-                goal: {x: 200, y: -10}
+                goal: {x: 150, y: 100}
             },
             {
                 title: "Memory 5: Hope for Tomorrow",
                 story: "Even though we're apart right now, these memories remain. They're real, they're beautiful, and they're ours. I hope one day we can create new ones together again.",
                 platforms: [
-                    {x: 0, y: 550, width: 200, height: 50},
-                    {x: 150, y: 490, width: 180, height: 40},
-                    {x: 300, y: 430, width: 180, height: 40},
-                    {x: 450, y: 370, width: 180, height: 40},
-                    {x: 600, y: 310, width: 180, height: 40},
-                    {x: 450, y: 250, width: 180, height: 40},
-                    {x: 250, y: 190, width: 180, height: 40},
-                    {x: 50, y: 130, width: 180, height: 40}
+                    {x: 0, y: 550, width: 800, height: 50}, // Solid ground for the end
+                    {x: 100, y: 450, width: 150, height: 40},
+                    {x: 325, y: 350, width: 150, height: 40},
+                    {x: 550, y: 450, width: 150, height: 40},
+                    {x: 150, y: 250, width: 500, height: 40} // Final wide platform
                 ],
                 hearts: [
-                    {x: 200, y: 450},
-                    {x: 350, y: 390},
-                    {x: 500, y: 330},
-                    {x: 450, y: 210},
-                    {x: 100, y: 90}
+                    {x: 150, y: 410},
+                    {x: 350, y: 310},
+                    {x: 600, y: 410},
+                    {x: 300, y: 210},
+                    {x: 450, y: 210}
                 ],
-                goal: {x: 120, y: 80}
+                goal: {x: 400, y: 200}
             }
         ];
 
@@ -648,6 +641,11 @@
                     player.y = platform.y - player.height;
                     player.velocityY = 0;
                     player.isJumping = false;
+                    
+                    // Move player with moving platform (Fix for "sliding" bug)
+                    if (platform.moving) {
+                        player.x += platform.speed * platform.dir;
+                    }
                 }
             }
 
