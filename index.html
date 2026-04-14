@@ -221,8 +221,7 @@
                 <p>A journey through the moments we shared together.<br>
                 Collect the hearts that represent our beautiful memories.<br><br>
                 This is for you, with all my love.</p>
-                <div id="audioStatus" style="font-size: 0.9em; color: #764ba2; margin-bottom: 15px;">Loading Music...</div>
-                <button id="startBtn" onclick="startGame()" disabled>Please Wait...</button>
+                <button id="startBtn" onclick="startGame()">Begin the Journey</button>
             </div>
         </div>
 
@@ -457,10 +456,6 @@
         function startSynth() {
             if (mainLoop) clearInterval(mainLoop);
             
-            audioStatus.textContent = 'Lovely Piano Active ✨';
-            startBtn.disabled = false;
-            startBtn.textContent = 'Begin the Journey';
-
             const playPianoNote = (freq, time, volume = 0.1) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
@@ -496,7 +491,7 @@
             const melody = isEnding ? [261.63, 329.63, 392.00, 523.25] : [329.63, 392.00, 440.00, 349.23];
             let i = 0;
             
-            const interval = isEnding ? 1200 : 2500;
+            const interval = 800;
             mainLoop = setInterval(() => {
                 if (isMuted) return;
                 if (audioCtx.state === 'suspended') audioCtx.resume();
