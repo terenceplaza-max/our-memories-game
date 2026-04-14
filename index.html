@@ -177,6 +177,30 @@
             border-radius: 15px;
             backdrop-filter: blur(10px);
         }
+
+        #musicToggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        #musicToggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
@@ -186,6 +210,7 @@
     <div id="gameContainer">
         <div id="levelInfo">Memory 1: The First Day</div>
         <div id="stats">Hearts Collected: <span id="heartCount">0</span>/5</div>
+        <div id="musicToggle" onclick="toggleMusic()">🔊</div>
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="controls">Arrow Keys / WASD to move • SPACE to jump</div>
 
@@ -284,25 +309,20 @@
                 title: "Memory 2: Our First Adventure",
                 story: "Every adventure with you felt like magic. We explored new places, tried new things, and created memories that would last forever.",
                 platforms: [
-                    {x: 0, y: 550, width: 120, height: 50},
-                    {x: 180, y: 480, width: 100, height: 40},
-                    {x: 350, y: 420, width: 100, height: 40},
-                    {x: 550, y: 420, width: 100, height: 40},
-                    {x: 700, y: 350, width: 100, height: 40},
-                    {x: 500, y: 280, width: 120, height: 40},
-                    {x: 300, y: 200, width: 120, height: 40},
-                    {x: 100, y: 150, width: 120, height: 40}
-                ],
-                obstacles: [
-                    {x: 180, y: 480, width: 100}, // Spikes on platform 2
-                    {x: 550, y: 420, width: 100}, // Spikes on platform 4
-                    {x: 300, y: 200, width: 120}  // Spikes on platform 7
+                    {x: 0, y: 550, width: 150, height: 50},
+                    {x: 200, y: 500, width: 120, height: 40},
+                    {x: 350, y: 440, width: 120, height: 40},
+                    {x: 520, y: 380, width: 120, height: 40},
+                    {x: 680, y: 320, width: 120, height: 40},
+                    {x: 550, y: 240, width: 120, height: 40},
+                    {x: 350, y: 180, width: 120, height: 40},
+                    {x: 150, y: 120, width: 120, height: 40}
                 ],
                 hearts: [
                     {x: 240, y: 460},
-                    {x: 380, y: 410},
-                    {x: 720, y: 310},
-                    {x: 660, y: 210},
+                    {x: 380, y: 400},
+                    {x: 720, y: 280},
+                    {x: 580, y: 200},
                     {x: 240, y: 80}
                 ],
                 goal: {x: 220, y: 50}
@@ -443,11 +463,26 @@
             ending.pause();
             ending.currentTime = 0;
             
-            music.volume = 0.3; // Soft volume
+            music.volume = 0.4;
             music.currentTime = 0;
             music.play().catch(e => console.log("Audio play blocked until interaction"));
+            updateMusicIcon();
             
             gameLoop();
+        }
+
+        let isMuted = false;
+        function toggleMusic() {
+            const music = document.getElementById('bgMusic');
+            const ending = document.getElementById('endingMusic');
+            isMuted = !isMuted;
+            music.muted = isMuted;
+            ending.muted = isMuted;
+            updateMusicIcon();
+        }
+
+        function updateMusicIcon() {
+            document.getElementById('musicToggle').textContent = isMuted ? '🔇' : '🔊';
         }
 
         function nextLevel() {
