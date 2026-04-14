@@ -349,14 +349,14 @@
                 story: "We grew together, supported each other through challenges, celebrated victories. You made me a better person just by being you.",
                 platforms: [
                     {x: 0, y: 550, width: 160, height: 50},
-                    {x: 180, y: 490, width: 130, height: 40},
-                    {x: 340, y: 430, width: 140, height: 40},
-                    {x: 510, y: 370, width: 150, height: 40, moving: true, range: 100, speed: 2, dir: 1, startX: 510},
-                    {x: 680, y: 310, width: 120, height: 40},
-                    {x: 540, y: 240, width: 160, height: 40},
-                    {x: 320, y: 170, width: 180, height: 40},
-                    {x: 520, y: 100, width: 150, height: 40},
-                    {x: 150, y: 60, width: 140, height: 40}
+                    {x: 180, y: 500, width: 130, height: 40},
+                    {x: 340, y: 450, width: 140, height: 40},
+                    {x: 510, y: 400, width: 150, height: 40, moving: true, range: 60, speed: 1.5, dir: 1, startX: 510},
+                    {x: 680, y: 350, width: 120, height: 40},
+                    {x: 540, y: 300, width: 160, height: 40},
+                    {x: 320, y: 250, width: 180, height: 40},
+                    {x: 520, y: 200, width: 150, height: 40},
+                    {x: 150, y: 150, width: 140, height: 40}
                 ],
                 hearts: [
                     {x: 220, y: 450},
@@ -371,23 +371,23 @@
                 title: "Memory 5: Hope for Tomorrow",
                 story: "Even though we're apart right now, these memories remain. They're real, they're beautiful, and they're ours. I hope one day we can create new ones together again.",
                 platforms: [
-                    {x: 0, y: 550, width: 150, height: 50},
-                    {x: 170, y: 480, width: 140, height: 40},
-                    {x: 350, y: 410, width: 150, height: 40},
-                    {x: 550, y: 340, width: 140, height: 40},
-                    {x: 350, y: 270, width: 140, height: 40},
-                    {x: 150, y: 200, width: 160, height: 40},
-                    {x: 350, y: 130, width: 170, height: 40},
-                    {x: 550, y: 60, width: 180, height: 40}
+                    {x: 0, y: 550, width: 200, height: 50},
+                    {x: 150, y: 490, width: 180, height: 40},
+                    {x: 300, y: 430, width: 180, height: 40},
+                    {x: 450, y: 370, width: 180, height: 40},
+                    {x: 600, y: 310, width: 180, height: 40},
+                    {x: 450, y: 250, width: 180, height: 40},
+                    {x: 250, y: 190, width: 180, height: 40},
+                    {x: 50, y: 130, width: 180, height: 40}
                 ],
                 hearts: [
-                    {x: 210, y: 440},
-                    {x: 380, y: 370},
-                    {x: 550, y: 300},
-                    {x: 380, y: 230},
-                    {x: 200, y: 160}
+                    {x: 200, y: 450},
+                    {x: 350, y: 390},
+                    {x: 500, y: 330},
+                    {x: 450, y: 210},
+                    {x: 100, y: 90}
                 ],
-                goal: {x: 600, y: 20}
+                goal: {x: 120, y: 80}
             }
         ];
 
@@ -457,36 +457,62 @@
         function startSynth() {
             if (mainLoop) clearInterval(mainLoop);
             
-            audioStatus.textContent = 'Lovely Music Active ✨';
+            audioStatus.textContent = 'Lovely Piano Active ✨';
             startBtn.disabled = false;
             startBtn.textContent = 'Begin the Journey';
 
-            const playNote = (freq, time, volume = 0.05) => {
+            const playPianoNote = (freq, time, volume = 0.1) => {
                 const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                osc.type = 'sine';
+                
+                // Triangle wave for a softer, piano-like tone
+                osc.type = 'triangle';
                 osc.frequency.setValueAtTime(freq, time);
+                
                 gain.gain.setValueAtTime(0, time);
-                gain.gain.linearRampToValueAtTime(volume, time + 0.1);
-                gain.gain.exponentialRampToValueAtTime(0.001, time + 2);
+                gain.gain.linearRampToValueAtTime(volume, time + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, time + 1.5);
+                
                 osc.connect(gain);
                 gain.connect(audioCtx.destination);
+                
                 osc.start(time);
-                osc.stop(time + 2);
+                osc.stop(time + 1.5);
+                
+                // Add a subtle harmonic for "richness"
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(freq * 2, time);
+                gain2.gain.setValueAtTime(0, time);
+                gain2.gain.linearRampToValueAtTime(volume * 0.3, time + 0.1);
+                gain2.gain.exponentialRampToValueAtTime(0.001, time + 1);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                osc2.start(time);
+                osc2.stop(time + 1);
             };
 
-            const melody = isEnding ? [261.63, 329.63, 392.00, 523.25] : [329.63, 349.23, 392.00, 440.00];
+            const melody = isEnding ? [261.63, 329.63, 392.00, 523.25] : [329.63, 392.00, 440.00, 349.23];
             let i = 0;
             
-            const interval = isEnding ? 1000 : 2000;
+            const interval = isEnding ? 1200 : 2500;
             mainLoop = setInterval(() => {
                 if (isMuted) return;
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
                 const now = audioCtx.currentTime;
-                playNote(melody[i % melody.length], now);
-                playNote(melody[(i + 2) % melody.length] * 0.5, now, 0.02);
+                playPianoNote(melody[i % melody.length], now);
+                if (i % 4 === 0) playPianoNote(melody[0] / 2, now, 0.05); // Bass note
                 i++;
             }, interval);
         }
+
+        document.addEventListener('click', () => {
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        });
 
         function startGame() {
             initAudio();
