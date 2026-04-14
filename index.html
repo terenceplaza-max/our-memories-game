@@ -441,11 +441,9 @@
             document.getElementById('heartCount').textContent = '0';
         }
 
-        // Audio Handling with YouTube + Synth Fallback
+        // Audio Handling with YouTube
         let ytPlayer;
         let isMuted = false;
-        let audioCtx;
-        let mainLoop;
 
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('youtubePlayer', {
@@ -458,51 +456,13 @@
                     'playlist': 'ua21q51aMJs'
                 },
                 events: {
-                    'onReady': onPlayerReady,
-                    'onError': onPlayerError
+                    'onReady': onPlayerReady
                 }
             });
         }
 
         function onPlayerReady(event) {
             console.log("YouTube Ready");
-        }
-
-        function onPlayerError(event) {
-            console.log("YouTube Error, falling back to synth");
-            initSynth();
-        }
-
-        function initSynth() {
-            if (audioCtx) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            startSynth();
-        }
-
-        function startSynth() {
-            if (mainLoop) clearInterval(mainLoop);
-            const playPianoNote = (freq, time, volume = 0.1) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(freq, time);
-                gain.gain.setValueAtTime(0, time);
-                gain.gain.linearRampToValueAtTime(volume, time + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, time + 1.5);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(time);
-                osc.stop(time + 1.5);
-            };
-            const melody = [329.63, 392.00, 440.00, 349.23];
-            let i = 0;
-            mainLoop = setInterval(() => {
-                if (isMuted) return;
-                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-                const now = audioCtx ? audioCtx.currentTime : 0;
-                playPianoNote(melody[i % melody.length], now);
-                i++;
-            }, 2000);
         }
 
         function startGame() {
@@ -512,22 +472,11 @@
             totalHeartsCollected = 0;
             loadLevel(currentLevel);
             
-            // Try YouTube
-            let ytStarted = false;
+            // Start YouTube music
             if (ytPlayer && ytPlayer.playVideo) {
-                try {
-                    ytPlayer.setVolume(50);
-                    ytPlayer.playVideo();
-                    ytStarted = true;
-                } catch(e) { console.log("YT Play Error"); }
+                ytPlayer.setVolume(50);
+                ytPlayer.playVideo();
             }
-            
-            // Fallback after 3 seconds if no YouTube
-            setTimeout(() => {
-                if (!ytStarted || (ytPlayer && ytPlayer.getPlayerState && ytPlayer.getPlayerState() !== 1)) {
-                    initSynth();
-                }
-            }, 3000);
             
             updateMusicIcon();
             gameLoop();
@@ -538,9 +487,6 @@
             if (ytPlayer && ytPlayer.pauseVideo) {
                 if (isMuted) ytPlayer.pauseVideo();
                 else ytPlayer.playVideo();
-            }
-            if (audioCtx) {
-                // If using synth, the loop handles mute
             }
             updateMusicIcon();
         }
