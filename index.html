@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Memories - A Journey</title>
+    <title>Our Memories - For Sciatzy</title>
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Philosopher:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -73,8 +73,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
             z-index: 10;
             opacity: 0;
             pointer-events: none;
@@ -87,25 +87,29 @@
         }
 
         .message-box {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
             padding: 40px 50px;
-            border-radius: 20px;
+            border-radius: 30px;
             max-width: 600px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.5s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
+            from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
         .message-box h1 {
             font-family: 'Philosopher', sans-serif;
-            font-size: 2.5em;
+            font-size: 2.8em;
             margin-bottom: 20px;
-            color: #764ba2;
+            background: linear-gradient(135deg, #764ba2 0%, #ff6b9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             font-weight: 700;
         }
 
@@ -120,86 +124,89 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
+            padding: 18px 50px;
+            font-size: 1.25em;
             font-family: 'Philosopher', sans-serif;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(118, 75, 162, 0.4);
         }
 
         .message-box button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(118, 75, 162, 0.4);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(118, 75, 162, 0.5);
         }
 
         #controls {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
             font-size: 1.1em;
             text-align: center;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 30px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 25px;
+            border-radius: 20px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         #levelInfo {
             position: absolute;
-            top: 20px;
+            top: 30px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
-            font-size: 1.4em;
+            font-size: 1.6em;
             font-family: 'Philosopher', sans-serif;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px 30px;
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 35px;
+            border-radius: 25px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 1px;
         }
 
         #stats {
             position: absolute;
-            top: 80px;
+            top: 100px;
             left: 50%;
             transform: translateX(-50%);
             color: white;
-            font-size: 1.2em;
-            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-            background: rgba(0, 0, 0, 0.3);
-            padding: 10px 25px;
-            border-radius: 15px;
+            font-size: 1.3em;
+            background: rgba(255, 107, 157, 0.4);
+            padding: 10px 30px;
+            border-radius: 20px;
             backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         #musicToggle {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.3);
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            width: 50px;
-            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             z-index: 100;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            font-size: 1.5em;
         }
 
         #musicToggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(15deg) scale(1.1);
+            border-color: #ff6b9d;
         }
 
         #youtubePlayer {
@@ -222,10 +229,11 @@
         <div class="ui-overlay active" id="startScreen">
             <div class="message-box">
                 <h1>Our Memories</h1>
-                <p>A journey through the moments we shared together.<br>
-                Collect the hearts that represent our beautiful memories.<br><br>
-                This is for you, with all my love.</p>
-                <button id="startBtn" onclick="startGame()">Begin the Journey</button>
+                <p>Hello Sciatzy,<br><br>
+                This is a journey through the beautiful moments we've shared. 
+                Each level represents a memory that I hold dear to my heart.<br><br>
+                Collect the hearts and find the path forward. I hope this brings a smile to your face.</p>
+                <button id="startBtn" onclick="startGame()">Begin Our Journey</button>
             </div>
         </div>
 
@@ -233,7 +241,7 @@
             <div class="message-box">
                 <h1 id="levelCompleteTitle">Memory Collected!</h1>
                 <p id="levelCompleteText"></p>
-                <button onclick="nextLevel()">Continue</button>
+                <button onclick="nextLevel()">Continue the Adventure</button>
             </div>
         </div>
 
@@ -241,7 +249,7 @@
             <div class="message-box">
                 <h1>All Our Memories</h1>
                 <p id="finalMessage"></p>
-                <button onclick="restartGame()">Relive the Memories</button>
+                <button onclick="restartGame()">Relive the Magic, Sciatzy</button>
             </div>
         </div>
 
@@ -260,13 +268,15 @@
         // Create floating particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 40; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
-                const size = Math.random() * 10 + 5;
+                const size = Math.random() * 12 + 4;
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.opacity = Math.random() * 0.5 + 0.2;
                 particle.style.animationDelay = Math.random() * 20 + 's';
                 particle.style.animationDuration = (Math.random() * 10 + 15) + 's';
                 particlesContainer.appendChild(particle);
@@ -286,7 +296,7 @@
         const levels = [
             {
                 title: "Memory 1: The First Day",
-                story: "I remember the first time we met. Your smile lit up the entire room, and I knew something special was beginning.",
+                story: "I remember the day we first met, Sciatzy. Your presence sparkled more than these stars, and I knew my world had just changed for the better.",
                 platforms: [
                     {x: 0, y: 550, width: 200, height: 50},
                     {x: 250, y: 480, width: 150, height: 40},
@@ -297,17 +307,13 @@
                     {x: 50, y: 120, width: 150, height: 40}
                 ],
                 hearts: [
-                    {x: 300, y: 440},
-                    {x: 500, y: 360},
-                    {x: 700, y: 310},
-                    {x: 580, y: 210},
-                    {x: 110, y: 80}
+                    {x: 300, y: 440}, {x: 500, y: 360}, {x: 700, y: 310}, {x: 580, y: 210}, {x: 110, y: 80}
                 ],
                 goal: {x: 100, y: 50}
             },
             {
                 title: "Memory 2: Our First Adventure",
-                story: "Every adventure with you felt like magic. We explored new places, tried new things, and created memories that would last forever.",
+                story: "From our first trip to the little coffee shop dates, every moment with you felt like a grand adventure. Thank you for being by my side, Sciatzy.",
                 platforms: [
                     {x: 0, y: 550, width: 150, height: 50},
                     {x: 200, y: 500, width: 120, height: 40},
@@ -319,17 +325,13 @@
                     {x: 150, y: 120, width: 120, height: 40}
                 ],
                 hearts: [
-                    {x: 240, y: 460},
-                    {x: 380, y: 400},
-                    {x: 720, y: 280},
-                    {x: 580, y: 200},
-                    {x: 240, y: 80}
+                    {x: 240, y: 460}, {x: 380, y: 400}, {x: 720, y: 280}, {x: 580, y: 200}, {x: 240, y: 80}
                 ],
                 goal: {x: 220, y: 50}
             },
             {
                 title: "Memory 3: The Little Things",
-                story: "It wasn't just the big moments. It was the quiet mornings, the silly jokes, the way you laughed at my terrible puns. Those small moments meant everything.",
+                story: "It's the small things—your laugh, your kindness, and those quiet moments we share. They build up to the greatest love I've ever known.",
                 platforms: [
                     {x: 0, y: 550, width: 180, height: 50},
                     {x: 220, y: 480, width: 140, height: 40},
@@ -341,49 +343,37 @@
                     {x: 100, y: 80, width: 140, height: 40}
                 ],
                 hearts: [
-                    {x: 270, y: 440},
-                    {x: 450, y: 380},
-                    {x: 650, y: 320},
-                    {x: 300, y: 180},
-                    {x: 550, y: 100}
+                    {x: 270, y: 440}, {x: 450, y: 380}, {x: 650, y: 320}, {x: 300, y: 180}, {x: 550, y: 100}
                 ],
                 goal: {x: 140, y: 20}
             },
             {
                 title: "Memory 4: Growing Together",
-                story: "We grew together, supported each other through challenges, celebrated victories. You made me a better person just by being you.",
+                story: "We've faced so much and grown stronger through it all. I love building a future with you, step by step.",
                 platforms: [
-                    {x: 50, y: 550, width: 200, height: 40},
-                    {x: 300, y: 450, width: 200, height: 40},
-                    {x: 550, y: 350, width: 200, height: 40},
+                    {x: 50, y: 550, width: 220, height: 45, moving: true, startX: 50, range: 40, speed: 1.5, dir: 1},
+                    {x: 350, y: 450, width: 200, height: 40},
+                    {x: 550, y: 350, width: 180, height: 40, moving: true, startX: 550, range: 60, speed: 2, dir: -1},
                     {x: 300, y: 250, width: 200, height: 40},
                     {x: 50, y: 150, width: 200, height: 40}
                 ],
                 hearts: [
-                    {x: 100, y: 510},
-                    {x: 350, y: 410},
-                    {x: 600, y: 310},
-                    {x: 350, y: 210},
-                    {x: 100, y: 110}
+                    {x: 120, y: 510}, {x: 400, y: 410}, {x: 650, y: 310}, {x: 400, y: 210}, {x: 100, y: 110}
                 ],
                 goal: {x: 150, y: 100}
             },
             {
-                title: "Memory 5: Hope for Tomorrow",
-                story: "Even though we're apart right now, these memories remain. They're real, they're beautiful, and they're ours. I hope one day we can create new ones together again.",
+                title: "Memory 5: Forever Together",
+                story: "Every day, I'm reminded of why I chose you. You are my home, Sciatzy. I can't wait for all the memories we haven't made yet.",
                 platforms: [
-                    {x: 0, y: 550, width: 800, height: 50}, // Solid ground for the end
+                    {x: 0, y: 550, width: 800, height: 50},
                     {x: 100, y: 450, width: 150, height: 40},
                     {x: 325, y: 350, width: 150, height: 40},
                     {x: 550, y: 450, width: 150, height: 40},
-                    {x: 150, y: 250, width: 500, height: 40} // Final wide platform
+                    {x: 150, y: 250, width: 500, height: 40}
                 ],
                 hearts: [
-                    {x: 150, y: 410},
-                    {x: 350, y: 310},
-                    {x: 600, y: 410},
-                    {x: 300, y: 210},
-                    {x: 450, y: 210}
+                    {x: 150, y: 410}, {x: 350, y: 310}, {x: 600, y: 410}, {x: 300, y: 210}, {x: 450, y: 210}
                 ],
                 goal: {x: 400, y: 200}
             }
@@ -393,12 +383,12 @@
         const player = {
             x: 50,
             y: 500,
-            width: 30,
-            height: 30,
+            width: 34,
+            height: 34,
             velocityX: 0,
             velocityY: 0,
-            speed: 5,
-            jumpPower: 12,
+            speed: 5.5,
+            jumpPower: 12.5,
             isJumping: false,
             color: '#ff6b9d',
             facingLeft: false
@@ -408,7 +398,7 @@
         const keys = {};
         document.addEventListener('keydown', (e) => {
             keys[e.key.toLowerCase()] = true;
-            if (e.key === ' ' || e.key.toLowerCase() === 'w' || e.key === 'ArrowUp') {
+            if ([' ', 'w', 'arrowup', 'arrowdown'].includes(e.key.toLowerCase()) || e.key.startsWith('Arrow')) {
                 e.preventDefault();
             }
         });
@@ -416,7 +406,7 @@
             keys[e.key.toLowerCase()] = false;
         });
 
-        // Current level data
+        // Current level state
         let platforms = [];
         let hearts = [];
         let obstacles = [];
@@ -425,9 +415,9 @@
 
         function loadLevel(levelIndex) {
             const level = levels[levelIndex];
-            platforms = [...level.platforms];
+            platforms = level.platforms.map(p => ({...p}));
             hearts = level.hearts.map(h => ({...h, collected: false}));
-            obstacles = level.obstacles ? [...level.obstacles] : [];
+            obstacles = level.obstacles ? level.obstacles.map(o => ({...o})) : [];
             goal = {...level.goal};
             heartsCollected = 0;
             
@@ -437,13 +427,19 @@
             player.velocityY = 0;
             player.isJumping = false;
 
-            document.getElementById('levelInfo').textContent = level.title;
+            const infoEl = document.getElementById('levelInfo');
+            infoEl.style.animation = 'none';
+            infoEl.offsetHeight; // trigger reflow
+            infoEl.style.animation = 'slideIn 0.5s ease';
+            infoEl.textContent = level.title;
+            
             document.getElementById('heartCount').textContent = '0';
         }
 
         // Audio Handling with YouTube
         let ytPlayer;
         let isMuted = false;
+        let ytReady = false;
 
         function onYouTubeIframeAPIReady() {
             ytPlayer = new YT.Player('youtubePlayer', {
@@ -456,13 +452,9 @@
                     'playlist': 'ua21q51aMJs'
                 },
                 events: {
-                    'onReady': onPlayerReady
+                    'onReady': () => { ytReady = true; console.log("Music Ready"); }
                 }
             });
-        }
-
-        function onPlayerReady(event) {
-            console.log("YouTube Ready");
         }
 
         function startGame() {
@@ -472,19 +464,17 @@
             totalHeartsCollected = 0;
             loadLevel(currentLevel);
             
-            // Start YouTube music
-            if (ytPlayer && ytPlayer.playVideo) {
+            if (ytReady && ytPlayer.playVideo) {
                 ytPlayer.setVolume(50);
                 ytPlayer.playVideo();
             }
-            
             updateMusicIcon();
             gameLoop();
         }
 
         function toggleMusic() {
             isMuted = !isMuted;
-            if (ytPlayer && ytPlayer.pauseVideo) {
+            if (ytReady && ytPlayer) {
                 if (isMuted) ytPlayer.pauseVideo();
                 else ytPlayer.playVideo();
             }
@@ -506,10 +496,9 @@
         }
 
         function showGameComplete() {
-            const finalText = `You collected all ${totalHeartsCollected} hearts across our journey together.\n\n` +
-                             `These memories are precious to me. Every moment we shared, every laugh, every adventure - they all matter.\n\n` +
-                             `I believe in us. I believe in the love we built. And I hope with all my heart that this isn't the end of our story.\n\n` +
-                             `With all my love, always.`;
+            const finalText = `Sciatzy, you've collected all ${totalHeartsCollected} hearts.\n\n` +
+                             `Every single one of them represents a beautiful part of us. You make my life colorful, and I'm so grateful for every second we share.\n\n` +
+                             `I love you, now and always.`;
             
             document.getElementById('finalMessage').textContent = finalText;
             showOverlay('gameCompleteScreen');
@@ -534,10 +523,30 @@
             document.getElementById('levelCompleteText').textContent = level.story;
             showOverlay('levelCompleteScreen');
             
-            // Play victory sound
             const victory = document.getElementById('victorySound');
-            victory.volume = 0.5;
-            victory.play();
+            victory.volume = 0.4;
+            victory.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        function gameOver() {
+            gameStarted = false;
+            
+            const dieSound = document.getElementById('dieSound');
+            dieSound.play().catch(e => console.log("Audio play blocked"));
+            
+            const startTitle = document.querySelector('#startScreen h1');
+            const startText = document.querySelector('#startScreen p');
+            const startButton = document.querySelector('#startScreen button');
+            
+            startTitle.textContent = "Take My Hand Again";
+            startText.innerHTML = "I won't let you fall, Sciatzy.<br>Let's continue our journey through our memories together.";
+            startButton.textContent = "Restart the Journey";
+            
+            showOverlay('startScreen');
+            
+            if (ytReady && ytPlayer && ytPlayer.pauseVideo) {
+                ytPlayer.pauseVideo();
+            }
         }
 
         // Game physics and update
@@ -560,7 +569,8 @@
                 player.velocityX = player.speed;
                 player.facingLeft = false;
             } else {
-                player.velocityX = 0;
+                player.velocityX *= 0.8; // Smooth friction
+                if (Math.abs(player.velocityX) < 0.1) player.velocityX = 0;
             }
 
             // Jumping
@@ -570,7 +580,7 @@
             }
 
             // Apply gravity
-            player.velocityY += 0.5;
+            player.velocityY += 0.55;
 
             // Update position
             player.x += player.velocityX;
@@ -582,34 +592,22 @@
                 if (player.x + player.width > platform.x &&
                     player.x < platform.x + platform.width &&
                     player.y + player.height > platform.y &&
-                    player.y + player.height < platform.y + platform.height + 20 &&
+                    player.y + player.height < platform.y + platform.height + 25 &&
                     player.velocityY >= 0) {
                     player.y = platform.y - player.height;
                     player.velocityY = 0;
                     player.isJumping = false;
                     
-                    // Move player with moving platform (Fix for "sliding" bug)
                     if (platform.moving) {
                         player.x += platform.speed * platform.dir;
                     }
                 }
             }
 
-            // Obstacle collision (Spikes)
-            for (let obs of obstacles) {
-                if (player.x + player.width > obs.x + 5 &&
-                    player.x < obs.x + obs.width - 5 &&
-                    player.y + player.height > obs.y - 10 &&
-                    player.y < obs.y + 10) {
-                    gameOver();
-                }
-            }
-
-            // Boundary collision
+            // Boundary and Death check
             if (player.x < 0) player.x = 0;
             if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
-            if (player.y > canvas.height) {
-                // If you die you go back from the start
+            if (player.y > canvas.height + 50) {
                 gameOver();
             }
 
@@ -618,7 +616,7 @@
                 if (!heart.collected) {
                     const dist = Math.sqrt(Math.pow(player.x + player.width/2 - heart.x, 2) + 
                                          Math.pow(player.y + player.height/2 - heart.y, 2));
-                    if (dist < 30) {
+                    if (dist < 35) {
                         heart.collected = true;
                         heartsCollected++;
                         totalHeartsCollected++;
@@ -631,7 +629,7 @@
             if (heartsCollected === hearts.length) {
                 const distToGoal = Math.sqrt(Math.pow(player.x + player.width/2 - goal.x, 2) + 
                                             Math.pow(player.y + player.height/2 - goal.y, 2));
-                if (distToGoal < 40) {
+                if (distToGoal < 45) {
                     showLevelComplete();
                 }
             }
@@ -639,68 +637,54 @@
 
         // Rendering
         function draw() {
-            // Clear canvas with gradient
+            // Gradient Background
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, '#ffecd2');
             gradient.addColorStop(1, '#fcb69f');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Draw platforms with soft shadows
+            // Draw platforms
             ctx.shadowBlur = 15;
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
             for (let platform of platforms) {
-                // Platform gradient
                 const platGradient = ctx.createLinearGradient(platform.x, platform.y, 
-                                                             platform.x, platform.y + platform.height);
+                                                              platform.x, platform.y + platform.height);
                 platGradient.addColorStop(0, '#a8edea');
                 platGradient.addColorStop(1, '#fed6e3');
                 ctx.fillStyle = platGradient;
-                ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+                ctx.beginPath();
+                ctx.roundRect(platform.x, platform.y, platform.width, platform.height, 10);
+                ctx.fill();
                 
-                // Platform outline
                 ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
                 ctx.lineWidth = 2;
-                ctx.strokeRect(platform.x, platform.y, platform.width, platform.height);
-            }
-
-            // Draw obstacles (Spikes)
-            ctx.fillStyle = '#ff4d4d';
-            for (let obs of obstacles) {
-                const spikeWidth = 20;
-                const numSpikes = obs.width / spikeWidth;
-                for (let i = 0; i < numSpikes; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(obs.x + i * spikeWidth, obs.y);
-                    ctx.lineTo(obs.x + i * spikeWidth + spikeWidth/2, obs.y - 15);
-                    ctx.lineTo(obs.x + (i + 1) * spikeWidth, obs.y);
-                    ctx.fill();
-                }
+                ctx.stroke();
             }
 
             // Draw hearts
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 25;
             for (let heart of hearts) {
                 if (!heart.collected) {
+                    const pulse = Math.sin(Date.now() / 300) * 3;
                     ctx.shadowColor = '#ff6b9d';
-                    drawHeart(heart.x, heart.y, 15);
+                    drawHeart(heart.x, heart.y, 16 + pulse);
                 }
             }
 
-            // Draw goal (when all hearts collected)
+            // Draw goal
             if (heartsCollected === hearts.length) {
-                ctx.shadowBlur = 30;
+                ctx.shadowBlur = 35;
                 ctx.shadowColor = '#ffd700';
-                const pulse = Math.sin(Date.now() / 200) * 5;
-                drawStar(goal.x, goal.y, 20 + pulse);
+                const pulse = Math.sin(Date.now() / 200) * 6;
+                drawStar(goal.x, goal.y, 22 + pulse);
             }
 
-            // Draw player
-            ctx.shadowBlur = 10;
+            // Draw player (Girl character)
+            ctx.shadowBlur = 15;
             ctx.shadowColor = 'rgba(0,0,0,0.2)';
             drawGirl(player.x + player.width/2, player.y + player.height/2, player.width, player.facingLeft);
 
-            // Reset shadow
             ctx.shadowBlur = 0;
         }
 
@@ -721,19 +705,18 @@
             ctx.translate(x, y);
             if (facingLeft) ctx.scale(-1, 1);
 
-            // Subtle jump animation (stretch/squash)
             let bounce = 0;
             if (player.isJumping) {
                 bounce = Math.sin(Date.now() / 100) * 2;
             }
 
-            // Body (Dress)
+            // Dress
             ctx.fillStyle = '#ff85a1';
             ctx.beginPath();
             ctx.moveTo(-10 * scale, (15 + bounce) * scale);
             ctx.lineTo(10 * scale, (15 + bounce) * scale);
-            ctx.lineTo(13 * scale, 0);
-            ctx.lineTo(-13 * scale, 0);
+            ctx.lineTo(14 * scale, 0);
+            ctx.lineTo(-14 * scale, 0);
             ctx.closePath();
             ctx.fill();
 
@@ -744,49 +727,44 @@
             ctx.fill();
 
             // Blush
-            ctx.fillStyle = 'rgba(255, 182, 193, 0.6)';
+            ctx.fillStyle = 'rgba(255, 182, 193, 0.7)';
             ctx.beginPath();
-            ctx.arc(-6 * scale, -7 * scale, 2 * scale, 0, Math.PI * 2);
-            ctx.arc(6 * scale, -7 * scale, 2 * scale, 0, Math.PI * 2);
+            ctx.arc(-6 * scale, -7 * scale, 2.5 * scale, 0, Math.PI * 2);
+            ctx.arc(6 * scale, -7 * scale, 2.5 * scale, 0, Math.PI * 2);
             ctx.fill();
 
-            // Hair (Short & Rounded)
+            // Hair
             ctx.fillStyle = '#4b2e2a';
             ctx.beginPath();
-            ctx.arc(0, -11 * scale, 11 * scale, Math.PI, 0); // Top
+            ctx.arc(0, -11 * scale, 11 * scale, Math.PI, 0);
             ctx.fill();
-            
-            // Rounded Hair Sides
             ctx.beginPath();
-            ctx.roundRect(-11 * scale, -11 * scale, 5 * scale, 12 * scale, 5 * scale);
-            ctx.roundRect(6 * scale, -11 * scale, 5 * scale, 12 * scale, 5 * scale);
+            ctx.roundRect(-11 * scale, -11 * scale, 6 * scale, 14 * scale, 6 * scale);
+            ctx.roundRect(5 * scale, -11 * scale, 6 * scale, 14 * scale, 6 * scale);
             ctx.fill();
 
             // Glasses
             ctx.strokeStyle = '#333';
-            ctx.lineWidth = 1.5 * scale;
-            // Left lens
-            ctx.strokeRect(-6 * scale, -11 * scale, 4 * scale, 4 * scale);
-            // Right lens
-            ctx.strokeRect(2 * scale, -11 * scale, 4 * scale, 4 * scale);
-            // Bridge
+            ctx.lineWidth = 1.8 * scale;
+            ctx.strokeRect(-6 * scale, -12 * scale, 5 * scale, 5 * scale);
+            ctx.strokeRect(1 * scale, -12 * scale, 5 * scale, 5 * scale);
             ctx.beginPath();
-            ctx.moveTo(-2 * scale, -9 * scale);
-            ctx.lineTo(2 * scale, -9 * scale);
+            ctx.moveTo(-1 * scale, -9.5 * scale);
+            ctx.lineTo(1 * scale, -9.5 * scale);
             ctx.stroke();
 
-            // Eyes (behind glasses)
+            // Eyes
             ctx.fillStyle = '#333';
             ctx.beginPath();
-            ctx.arc(-4 * scale, -9 * scale, 1.2 * scale, 0, Math.PI * 2);
-            ctx.arc(4 * scale, -9 * scale, 1.2 * scale, 0, Math.PI * 2);
+            ctx.arc(-3.5 * scale, -9.5 * scale, 1.5 * scale, 0, Math.PI * 2);
+            ctx.arc(3.5 * scale, -9.5 * scale, 1.5 * scale, 0, Math.PI * 2);
             ctx.fill();
 
             // Smile
             ctx.beginPath();
             ctx.strokeStyle = '#4b2e2a';
-            ctx.lineWidth = 1;
-            ctx.arc(0, -6 * scale, 3 * scale, 0.2 * Math.PI, 0.8 * Math.PI);
+            ctx.lineWidth = 1.5;
+            ctx.arc(0, -6 * scale, 3.5 * scale, 0.2 * Math.PI, 0.8 * Math.PI);
             ctx.stroke();
 
             ctx.restore();
@@ -806,30 +784,6 @@
             ctx.fill();
         }
 
-        function gameOver() {
-            gameStarted = false;
-            
-            // Play death sound
-            const dieSound = document.getElementById('dieSound');
-            dieSound.play();
-            
-            // Update start screen text for "death"
-            const startTitle = document.querySelector('#startScreen h1');
-            const startText = document.querySelector('#startScreen p');
-            const startButton = document.querySelector('#startScreen button');
-            
-            startTitle.textContent = "The Journey Stumbled";
-            startText.innerHTML = "I fell, but my love for you never wavers.<br>Let's start our journey through our memories again.";
-            startButton.textContent = "Restart the Journey";
-            
-            showOverlay('startScreen');
-            
-            // Stop music 
-            const music = document.getElementById('bgMusic');
-            music.pause();
-            music.currentTime = 0;
-        }
-
         function gameLoop() {
             if (!gameStarted) return;
             update();
@@ -837,7 +791,6 @@
             requestAnimationFrame(gameLoop);
         }
     </script>
-    <!-- YouTube IFrame API -->
     <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
